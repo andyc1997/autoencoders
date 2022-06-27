@@ -50,8 +50,8 @@ print(f"Using {device} device")
 model = AEobj(hidden_dim=60, input_dim=nx*ny).to(device)
 print(model)
 
-criterion = nn.MSELoss(reduction='sum')
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+criterion = nn.MSELoss(reduction='mean')
+optimizer = optim.Adam(model.parameters(), lr=1e-6)
 
 #endregion
 
