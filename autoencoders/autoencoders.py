@@ -23,7 +23,7 @@ class AEobj(nn.Module):
 
 # Deep autoencoder architecture
 class DeepAEobj(nn.Module):
-    def __init__(self, hidden_dims=None, input_dim=None):
+    def __init__(self, hidden_dims=None, input_dim=None, greedy=False, pretrained_weights=None):
         super(DeepAEobj, self).__init__()
 
         # encoders
@@ -35,6 +35,19 @@ class DeepAEobj(nn.Module):
         self.decoder1 = Decoder(input_dim, hidden_dims[0])
         self.decoder2 = Decoder(hidden_dims[0], hidden_dims[1])
         self.decoder3 = Decoder(hidden_dims[1], hidden_dims[2])
+
+        # greedy-layerwise initialization
+        if greedy is True:
+            assert pretrained_weights is not None
+
+            self.encoder1.load_state_dict(pretrained_weights[0]['encoder'])
+            self.decoder1.load_state_dict(pretrained_weights[0]['decoder'])
+
+            self.encoder2.load_state_dict(pretrained_weights[1]['encoder'])
+            self.decoder2.load_state_dict(pretrained_weights[1]['decoder'])
+
+            self.encoder3.load_state_dict(pretrained_weights[2]['encoder'])
+            self.decoder3.load_state_dict(pretrained_weights[2]['decoder'])
 
     def forward(self, x):
         # encode

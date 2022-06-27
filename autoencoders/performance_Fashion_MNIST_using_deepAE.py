@@ -2,18 +2,10 @@ import idx2numpy
 import numpy as np
 import torch
 
-from autoencoders import deepAEobj
+from autoencoders import DeepAEobj
 
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
-
-#region change directory [ignored it]
-import os
-print(os.getcwd())
-os.chdir(r'C:\Users\user\Documents\research-stat-summary\autoencoders')
-print(os.getcwd())
-
-#endregion
 
 
 ## Fashion MNIST
@@ -48,7 +40,23 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device} device")
 
 hidden_dims = [392, 196, 98]
-model = deepAEobj(hidden_dims=hidden_dims, input_dim=nx*ny).to(device)
+pretrained_weights = [{} for k in range(len(hidden_dims))]
+
+# region load weights
+for k in range(len(hidden_dims)):
+    param_dict = torch.load('AE_layer{k}_model.pth'.format(k=str(k)), map_location=device)
+    pretrained_weights[k] = {'encoder':
+                                 {'fc1.weight': param_dict['encoder.fc1.weight'],
+                                  'fc1.bias': param_dict['encoder.fc1.bias']},
+                             'decoder':
+                                 {'fc1.weight': param_dict['decoder.fc1.weight'],
+                                  'fc1.bias': param_dict['decoder.fc1.bias']}
+                             }
+    print(str(param_dict['encoder.fc1.weight'].shape) + '\t' + str(param_dict['encoder.fc1.bias'].shape))
+#endregion
+
+model = DeepAEobj(hidden_dims=hidden_dims, input_dim=nx * ny,
+                  greedy=True, pretrained_weights=pretrained_weights).to(device)
 print(model)
 
 criterion = nn.MSELoss(reduction='mean')
@@ -58,7 +66,7 @@ optimizer = optim.Adam(model.parameters(), lr=1e-6)
 
 
 #region training
-max_epoch = 120
+max_epoch = 50
 loss_values = []
 loss_values_tst = []
 for epoch in range(max_epoch):
@@ -94,9 +102,8 @@ for epoch in range(max_epoch):
 
 
 #region save model
-out_path = r'C:\Users\user\Documents\research-stat-summary\autoencoders'
-model_ver = r'\deepAE_model1.pth' # .pt or .pth means a pytorch object
-torch.save(model.state_dict(), out_path + model_ver)
+model_ver = r'.\deepAE_model1.pth' # .pt or .pth means a pytorch object
+torch.save(model.state_dict(), model_ver)
 
 #endregion
 
@@ -142,7 +149,7 @@ axs[1].axis('off')
 # load model
 device = torch.device('cpu')
 hidden_dims = [392, 196, 98]
-model = deepAEobj(hidden_dims=hidden_dims, input_dim=nx*ny)
+model = DeepAEobj(hidden_dims=hidden_dims, input_dim=nx * ny)
 model.load_state_dict(torch.load('deepAE_model1.pth', map_location=device))
 
 # compute latent space
@@ -165,7 +172,4 @@ for i, h in enumerate(np.linspace(h_min, h_max, num=num_plots)):
     axs[i].set_title('Reconstruction')
     axs[i].axis('off')
 
-# latent space correlation map
-import pandas as pd
-df = pd.DataFrame(latent_space)
-plt.imshow(df.corr())
+#endregion

@@ -7,14 +7,6 @@ from autoencoders import AEobj
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-#region change directory [ignored it]
-import os
-print(os.getcwd())
-os.chdir(r'C:\Users\user\Documents\research-stat-summary\autoencoders')
-print(os.getcwd())
-
-#endregion
-
 
 ## Fashion MNIST
 
