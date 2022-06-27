@@ -7,6 +7,6 @@ _Guo, X., Liu, X., Zhu, E., & Yin, J. (2017, November). Deep clustering with con
 
 ### Structure
 
-Folder _autoencoders_ contains shallow and deep regular autoencoder models for fashion-MNIST data.
+Folder _autoencoders_ contains shallow and stacked regular autoencoder models with greedy layerwise training for fashion-MNIST data. 
 
 Folder _conv-autoencoders_ contains convolutional autoencoder model for MNIST data.
