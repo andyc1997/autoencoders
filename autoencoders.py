@@ -3,7 +3,6 @@ from torch.nn import functional as F
 
 
 # Shallow autoencoder architecture
-
 class AEobj(nn.Module):
     def __init__(self, hidden_dim=None, input_dim=None):
         super(AEobj, self).__init__()
@@ -21,6 +20,8 @@ class AEobj(nn.Module):
         x = self.decoder(x)
         return x
 
+
+# Deep autoencoder architecture
 class deepAEobj(nn.Module):
     def __init__(self, hidden_dims=None, input_dim=None):
         super(deepAEobj, self).__init__()
@@ -47,11 +48,6 @@ class deepAEobj(nn.Module):
         x = self.decoder1(x)
         return x
 
-class convAEobj(nn.Module):
-    def __init__(self, input_dim=None):
-        super(convAEobj, self).__init__()
-        
-
 
 #region encoder function g
 class encoder(nn.Module):
@@ -75,5 +71,3 @@ class decoder(nn.Module):
         x = F.relu(self.fc1(x))
         return x
 #endregion
-
-
