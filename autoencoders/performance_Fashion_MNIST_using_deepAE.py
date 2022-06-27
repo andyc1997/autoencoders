@@ -51,8 +51,8 @@ hidden_dims = [392, 196, 98]
 model = deepAEobj(hidden_dims=hidden_dims, input_dim=nx*ny).to(device)
 print(model)
 
-criterion = nn.MSELoss(reduction='sum')
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+criterion = nn.MSELoss(reduction='mean')
+optimizer = optim.Adam(model.parameters(), lr=1e-6)
 
 #endregion
 
