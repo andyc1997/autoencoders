@@ -47,7 +47,7 @@ dataloader_tst = DataLoader(X_tst, batch_size=batch_size)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device} device")
 
-model = AEobj(hidden_dim=60, input_dim=nx*ny).to(device)
+model = AEobj(hidden_dim=128, input_dim=nx*ny).to(device)
 print(model)
 
 criterion = nn.MSELoss(reduction='mean')
@@ -57,7 +57,7 @@ optimizer = optim.Adam(model.parameters(), lr=1e-6)
 
 
 #region training
-max_epoch = 120
+max_epoch = 50
 loss_values = []
 loss_values_tst = []
 for epoch in range(max_epoch):
@@ -77,7 +77,7 @@ for epoch in range(max_epoch):
         # print loss
         running_loss.append(loss.item()) # extract loss' value as a python float
         if (i % 100 == 0) and (i > 0):
-            print(f'Epoch: {epoch} \t Iteration: {i} \t Loss: {np.round(np.mean(running_loss), decimals=2)}')
+            print(f'Epoch: {epoch} \t Iteration: {i} \t Loss: {np.round(np.mean(running_loss), decimals=6)}')
 
     loss_values.append(np.mean(running_loss))
 
@@ -93,9 +93,8 @@ for epoch in range(max_epoch):
 
 
 #region save model
-out_path = r'C:\Users\user\Documents\research-stat-summary\autoencoders'
-model_ver = r'\AE_model1.pth' # .pt or .pth means a pytorch object
-torch.save(model.state_dict(), out_path + model_ver)
+model_ver = r'.\AE_model1.pth' # .pt or .pth means a pytorch object
+torch.save(model.state_dict(), model_ver)
 
 #endregion
 
@@ -140,7 +139,7 @@ axs[1].axis('off')
 #region latent space
 # load model
 device = torch.device('cpu')
-model = AEobj(hidden_dim=60, input_dim=nx*ny)
+model = AEobj(hidden_dim=128, input_dim=nx*ny)
 model.load_state_dict(torch.load('AE_model1.pth', map_location=device))
 
 # compute latent space
@@ -148,9 +147,9 @@ latent_space = model.encoder(X_tr.to(device))
 latent_space = latent_space.detach().cpu().numpy()
 
 # latent space traversal
-col_select = 20
+col_select = 2
 h_min, h_max = np.min(latent_space[:, col_select]), np.max(latent_space[:, col_select])
-img_latent = latent_space[50, :]
+img_latent = latent_space[30, :]
 
 num_plots = 10
 fig, axs = plt.subplots(1, num_plots)

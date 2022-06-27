@@ -12,8 +12,8 @@ class AEobj(nn.Module):
         assert hidden_dim > 0
         assert input_dim > 0
 
-        self.encoder = encoder(input_dim, hidden_dim)
-        self.decoder = decoder(input_dim, hidden_dim)
+        self.encoder = Encoder(input_dim, hidden_dim)
+        self.decoder = Decoder(input_dim, hidden_dim)
 
     def forward(self, x):
         x = self.encoder(x)
@@ -22,19 +22,19 @@ class AEobj(nn.Module):
 
 
 # Deep autoencoder architecture
-class deepAEobj(nn.Module):
+class DeepAEobj(nn.Module):
     def __init__(self, hidden_dims=None, input_dim=None):
-        super(deepAEobj, self).__init__()
+        super(DeepAEobj, self).__init__()
 
         # encoders
-        self.encoder1 = encoder(input_dim, hidden_dims[0])
-        self.encoder2 = encoder(hidden_dims[0], hidden_dims[1])
-        self.encoder3 = encoder(hidden_dims[1], hidden_dims[2])
+        self.encoder1 = Encoder(input_dim, hidden_dims[0])
+        self.encoder2 = Encoder(hidden_dims[0], hidden_dims[1])
+        self.encoder3 = Encoder(hidden_dims[1], hidden_dims[2])
 
         # decoders
-        self.decoder1 = decoder(input_dim, hidden_dims[0])
-        self.decoder2 = decoder(hidden_dims[0], hidden_dims[1])
-        self.decoder3 = decoder(hidden_dims[1], hidden_dims[2])
+        self.decoder1 = Decoder(input_dim, hidden_dims[0])
+        self.decoder2 = Decoder(hidden_dims[0], hidden_dims[1])
+        self.decoder3 = Decoder(hidden_dims[1], hidden_dims[2])
 
     def forward(self, x):
         # encode
@@ -50,9 +50,9 @@ class deepAEobj(nn.Module):
 
 
 #region encoder function g
-class encoder(nn.Module):
+class Encoder(nn.Module):
     def __init__(self, input_dim, hidden_dim):
-        super(encoder, self).__init__()
+        super(Encoder, self).__init__()
         self.fc1 = nn.Linear(input_dim, hidden_dim)
 
     def forward(self, x):
@@ -62,9 +62,9 @@ class encoder(nn.Module):
 
 
 #region decoder function f
-class decoder(nn.Module):
+class Decoder(nn.Module):
     def __init__(self, input_dim, hidden_dim):
-        super(decoder, self).__init__()
+        super(Decoder, self).__init__()
         self.fc1 = nn.Linear(hidden_dim, input_dim)
 
     def forward(self, x):
